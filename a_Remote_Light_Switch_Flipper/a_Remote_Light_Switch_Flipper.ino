@@ -2,18 +2,19 @@
 Black button = button 1 (up)
 Green button = button 2 (down)
 */
+#include <Arduino.h>
+#include <IRremoteESP8266.h>
+#include <IRrecv.h>
+#include <IRutils.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Servo.h>
 
-ESP8266WebServer server;
-
 #define pin_led 0
 #define button1 12
 #define button2 13
+#define ir_receiver 14
 #define servo_pin 16
-
-Servo myservo;
 
 char* ssid = "NETGEAR37";
 char* password = "364h-rbyu-lhtb";
@@ -82,6 +83,14 @@ char index_html[] PROGMEM = {"<html>\n"
 "  </body>\n"
 "</html>"};
 
+#define ir_up 0xFF629D
+#define ir_down 0xFFA857
+
+ESP8266WebServer server;
+Servo myservo;
+IRrecv irrecv(ir_receiver);
+decode_results results;
+
 void setup()
 {
   //Pinmodes
@@ -94,6 +103,7 @@ void setup()
   Serial.begin(115200);
   myservo.attach(servo_pin); //Servo setup
   WiFi.begin(ssid, password); //Wifi setup
+  irrecv.enableIRIn(); //Start the receiver
   
   //Connect to wifi
   while(WiFi.status()!=WL_CONNECTED)
@@ -132,5 +142,30 @@ void loop()
     Serial.println("Down pressed");
     myservo.write(45);
     delay(500);
+  }
+
+  //IR control
+  if (irrecv.decode(&results)) {
+
+    serialPrintUint64(results.value, HEX);
+    Serial.println("");
+
+    switch (results.value)
+    {
+      case ir_up:
+        Serial.println("up");
+        myservo.write(120);
+        delay(500);
+        break;
+
+      case ir_down:
+        Serial.println("down");
+        myservo.write(45);
+        delay(500);
+        break;
+
+      default: myservo.write(85);
+    }
+    irrecv.resume();  //Receive the next value
   }
 }
