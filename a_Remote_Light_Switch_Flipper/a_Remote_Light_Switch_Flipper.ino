@@ -10,7 +10,8 @@ Green button = button 2 (down)
 #include <ESP8266WebServer.h>
 #include <Servo.h>
 
-#define pin_led 0
+#define wifi_status_led 0
+#define orientation_switch 4
 #define button1 12
 #define button2 13
 #define ir_receiver 14
@@ -94,10 +95,11 @@ decode_results results;
 void setup()
 {
   //Pinmodes
-  pinMode(pin_led, OUTPUT); // Built-in led pin
+  pinMode(wifi_status_led, OUTPUT); // Built-in led pin
   pinMode(servo_pin, OUTPUT); // Servo control pin
   pinMode(button1, INPUT_PULLUP); //Button input pin
   pinMode(button2, INPUT_PULLUP); //Button input pin
+  pinMode(orientation_switch, INPUT_PULLUP); //Sliding switch input pin
 
   //Setup
   Serial.begin(115200);
@@ -109,6 +111,10 @@ void setup()
   while(WiFi.status()!=WL_CONNECTED)
   {
     Serial.print(".");
+    digitalWrite(wifi_status_led, LOW);
+    delay(500);
+    Serial.print(".");
+    digitalWrite(wifi_status_led, HIGH);
     delay(500);
   }
 
@@ -120,6 +126,7 @@ void setup()
   
   Serial.println(""); Serial.print("Connected to "); Serial.println(ssid);
   Serial.print("IP Address: "); Serial.println(WiFi.localIP());
+  digitalWrite(wifi_status_led, LOW);
 }
 
 void loop()
