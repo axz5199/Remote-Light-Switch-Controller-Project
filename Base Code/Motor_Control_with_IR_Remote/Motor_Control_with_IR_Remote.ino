@@ -20,12 +20,9 @@ void setup() {
   irrecv.enableIRIn();  // Start the receiver
   pinMode(servo_pin, OUTPUT);
   myservo.attach(servo_pin);
-  
-  while (!Serial)  // Wait for the serial connection to be establised.
-    delay(50);
+
   Serial.println();
   Serial.print("IRrecvDemo is now running and waiting for IR message on Pin ");
-  Serial.println(ir_receiver);
 
   myservo.write(85);
   delay(500);
@@ -34,26 +31,28 @@ void setup() {
 void loop() {
   myservo.write(85);
   
-  if (irrecv.decode(&results))// Returns 0 if no data ready, 1 if data ready. 
-  {
-    Serial.print("Code: "); 
-    Serial.println(results.value, HEX); //prints the value a a button press
+  if (irrecv.decode(&results)) {
+
+    serialPrintUint64(results.value, HEX);
+    Serial.println("");
 
     switch (results.value)
     {
-      case upButton:
-          myservo.write(115);
-          delay(500);
-          break;
-          
-      case downButton:
-          myservo.write(55);
-          delay(500);
-          break;
+      case ir_up:
+        Serial.println("up");
+        myservo.write(120);
+        delay(500);
+        break;
 
-      default: myservo.write(100);
+      case ir_down:
+        Serial.println("down");
+        myservo.write(45);
+        delay(500);
+        break;
+
+      default: myservo.write(85);
     }
-    
-    irrecv.resume(); //prepare to get next value
+
+    irrecv.resume();  // Receive the next value
   }
 }
