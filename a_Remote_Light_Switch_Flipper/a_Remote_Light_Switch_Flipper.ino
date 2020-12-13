@@ -94,7 +94,7 @@ void setup()
   Serial.begin(115200);
   myservo.attach(servo_pin); //Servo setup
   WiFi.begin(ssid, password); //Wifi setup
-
+  
   //Connect to wifi
   while(WiFi.status()!=WL_CONNECTED)
   {
@@ -103,10 +103,10 @@ void setup()
   }
 
   //Establish HTML routes
-  server.on("/", handleRoot);
-  server.on("/up", handleUp);
-  server.on("/down", handleDown);
-  server.begin();
+  server.on("/", handleRoot); //Call function to handle root
+  server.on("/up", handleUp); //Call function to handle up command
+  server.on("/down", handleDown); //Call function to handle down command
+  server.begin(); //Start server
   
   Serial.println(""); Serial.print("Connected to "); Serial.println(ssid);
   Serial.print("IP Address: "); Serial.println(WiFi.localIP());
@@ -114,10 +114,12 @@ void setup()
 
 void loop()
 {
+  //Wifi control
   server.handleClient();
 
   myservo.write(85);
 
+  //Physical button control
   if (digitalRead(button1) == 0)
   {
     Serial.println("Up pressed");
