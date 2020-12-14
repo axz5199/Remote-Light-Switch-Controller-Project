@@ -87,6 +87,8 @@ char index_html[] PROGMEM = {"<html>\n"
 #define ir_up 0xFF629D
 #define ir_down 0xFFA857
 
+int wifi_connection_timer = 0; //Measures the amount of time spent trying to connect to wifi
+
 ESP8266WebServer server;
 Servo myservo;
 IRrecv irrecv(ir_receiver);
@@ -102,7 +104,7 @@ void setup()
   pinMode(orientation_switch, INPUT_PULLUP); //Sliding switch input pin
 
   //Setup
-  Serial.begin(115200);
+  Serial.begin(115200); delay(15); Serial.println("");
   myservo.attach(servo_pin); //Servo setup
   WiFi.begin(ssid, password); //Wifi setup
   irrecv.enableIRIn(); //Start the receiver
@@ -116,17 +118,28 @@ void setup()
     Serial.print(".");
     digitalWrite(wifi_status_led, HIGH);
     delay(500);
+    wifi_connection_timer++;
+    if (wifi_connection_timer == 10) break;
   }
 
-  //Establish HTML routes
-  server.on("/", handleRoot); //Call function to handle root
-  server.on("/up", handleUp); //Call function to handle up command
-  server.on("/down", handleDown); //Call function to handle down command
-  server.begin(); //Start server
-  
-  Serial.println(""); Serial.print("Connected to "); Serial.println(ssid);
-  Serial.print("IP Address: "); Serial.println(WiFi.localIP());
-  digitalWrite(wifi_status_led, LOW);
+  Serial.println("");
+
+  //Establish HTML routes if wifi successfully connects
+  if (WiFi.status()==WL_CONNECTED)
+  {
+    server.on("/", handleRoot); //Call function to handle root
+    server.on("/up", handleUp); //Call function to handle up command
+    server.on("/down", handleDown); //Call function to handle down command
+    server.begin(); //Start server
+    Serial.print("Connected to "); Serial.println(ssid);
+    Serial.print("IP Address: "); Serial.println(WiFi.localIP());
+    digitalWrite(wifi_status_led, LOW);
+  }
+  else //Skip wifi setup if it fails to connect
+  {
+    Serial.println("Wifi failed to connect");
+    digitalWrite(wifi_status_led, HIGH);
+  }
 }
 
 void loop()
