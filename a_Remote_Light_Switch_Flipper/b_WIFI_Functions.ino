@@ -6,7 +6,7 @@ void handleRoot()
 void handleUp()
 {
   Serial.println("Wifi up");
-  myservo.write(120);
+  myservo.write(servo_position_up);
   server.send_P(200, "text/html", index_html);
   delay(500);
 }
@@ -14,7 +14,7 @@ void handleUp()
 void handleDown()
 {
   Serial.println("Wifi down");
-  myservo.write(45);
+  myservo.write(servo_position_down);
   server.send_P(200, "text/html", index_html);
   delay(500);
 }

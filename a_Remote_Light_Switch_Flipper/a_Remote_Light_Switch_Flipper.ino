@@ -89,6 +89,10 @@ char index_html[] PROGMEM = {"<html>\n"
 
 int wifi_connection_timer = 0; //Measures the amount of time spent trying to connect to wifi
 
+int servo_position_up = 120;
+int servo_position_mid = 85;
+int servo_position_down = 45;
+
 ESP8266WebServer server;
 Servo myservo;
 IRrecv irrecv(ir_receiver);
@@ -103,11 +107,24 @@ void setup()
   pinMode(button2, INPUT_PULLUP); //Button input pin
   pinMode(orientation_switch, INPUT_PULLUP); //Sliding switch input pin
 
+  //Esablish orientation
+  if (digitalRead(orientation_switch) == 0) //Servo on left side
+  {
+    servo_position_up = 45;
+    servo_position_down = 120;
+  }
+  else //Servo on right side
+  {
+    servo_position_up = 120;
+    servo_position_down = 45;
+  }
+  
+
   //Setup
   Serial.begin(115200); delay(15); Serial.println("");
   myservo.attach(servo_pin); //Servo setup
-  WiFi.begin(ssid, password); //Wifi setup
   irrecv.enableIRIn(); //Start the receiver
+  WiFi.begin(ssid, password); //Wifi setup
   
   //Connect to wifi
   while(WiFi.status()!=WL_CONNECTED)
@@ -147,20 +164,20 @@ void loop()
   //Wifi control
   server.handleClient();
 
-  myservo.write(85);
+  myservo.write(servo_position_mid);
 
   //Physical button control
   if (digitalRead(button1) == 0)
   {
     Serial.println("PB up");
-    myservo.write(120);
+    myservo.write(servo_position_up);
     delay(500);
   }
 
   if (digitalRead(button2) == 0)
   {
     Serial.println("PB down");
-    myservo.write(45);
+    myservo.write(servo_position_down);
     delay(500);
   }
 
@@ -174,19 +191,19 @@ void loop()
     {
       case ir_up:
         Serial.println("IR up");
-        myservo.write(120);
+        myservo.write(servo_position_up);
         delay(500);
         break;
 
       case ir_down:
         Serial.println("IR down");
-        myservo.write(45);
+        myservo.write(servo_position_down);
         delay(500);
         break;
 
       default:
         Serial.println("IR misc");
-        myservo.write(85);
+        myservo.write(servo_position_mid);
     }
     irrecv.resume();  //Receive the next value
   }
