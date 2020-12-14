@@ -5,7 +5,7 @@ void handleRoot()
 
 void handleUp()
 {
-  Serial.println("Up pressed");
+  Serial.println("Wifi up");
   myservo.write(120);
   server.send_P(200, "text/html", index_html);
   delay(500);
@@ -13,7 +13,7 @@ void handleUp()
 
 void handleDown()
 {
-  Serial.println("Down pressed");
+  Serial.println("Wifi down");
   myservo.write(45);
   server.send_P(200, "text/html", index_html);
   delay(500);

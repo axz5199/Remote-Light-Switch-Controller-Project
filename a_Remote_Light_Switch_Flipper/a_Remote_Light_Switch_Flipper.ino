@@ -152,14 +152,14 @@ void loop()
   //Physical button control
   if (digitalRead(button1) == 0)
   {
-    Serial.println("Up pressed");
+    Serial.println("PB up");
     myservo.write(120);
     delay(500);
   }
 
   if (digitalRead(button2) == 0)
   {
-    Serial.println("Down pressed");
+    Serial.println("PB down");
     myservo.write(45);
     delay(500);
   }
@@ -173,18 +173,20 @@ void loop()
     switch (results.value)
     {
       case ir_up:
-        Serial.println("up");
+        Serial.println("IR up");
         myservo.write(120);
         delay(500);
         break;
 
       case ir_down:
-        Serial.println("down");
+        Serial.println("IR down");
         myservo.write(45);
         delay(500);
         break;
 
-      default: myservo.write(85);
+      default:
+        Serial.println("IR misc");
+        myservo.write(85);
     }
     irrecv.resume();  //Receive the next value
   }
