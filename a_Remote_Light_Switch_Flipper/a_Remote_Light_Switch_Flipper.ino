@@ -170,14 +170,14 @@ void loop()
   if (digitalRead(button1) == 0)
   {
     Serial.println("PB up");
-    myservo.write(servo_position_up);
+    myservo.write(120);
     delay(500);
   }
 
   if (digitalRead(button2) == 0)
   {
     Serial.println("PB down");
-    myservo.write(servo_position_down);
+    myservo.write(45);
     delay(500);
   }
 
