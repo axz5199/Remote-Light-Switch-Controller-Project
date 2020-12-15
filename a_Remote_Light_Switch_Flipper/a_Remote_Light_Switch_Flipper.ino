@@ -123,6 +123,7 @@ void setup()
   //Setup
   Serial.begin(115200); delay(15); Serial.println("");
   myservo.attach(servo_pin); //Servo setup
+  myservo.write(servo_position_mid);
   irrecv.enableIRIn(); //Start the receiver
   WiFi.begin(ssid, password); //Wifi setup
   
@@ -157,6 +158,7 @@ void setup()
     Serial.println("Wifi failed to connect");
     digitalWrite(wifi_status_led, HIGH);
   }
+  myservo.detach();
 }
 
 void loop()
@@ -164,21 +166,29 @@ void loop()
   //Wifi control
   server.handleClient();
 
-  myservo.write(servo_position_mid);
+//  myservo.detach();
 
   //Physical button control
   if (digitalRead(button1) == 0)
   {
     Serial.println("PB up");
+    myservo.attach(servo_pin);
     myservo.write(120);
     delay(500);
+    myservo.write(85);
+    delay(500);
+    myservo.detach();
   }
 
   if (digitalRead(button2) == 0)
   {
     Serial.println("PB down");
+    myservo.attach(servo_pin);
     myservo.write(45);
     delay(500);
+    myservo.write(85);
+    delay(500);
+    myservo.detach();
   }
 
   //IR control
@@ -191,19 +201,30 @@ void loop()
     {
       case ir_up:
         Serial.println("IR up");
+        myservo.attach(servo_pin);
         myservo.write(servo_position_up);
         delay(500);
+        myservo.write(servo_position_mid);
+        delay(500);
+        myservo.detach();
         break;
 
       case ir_down:
         Serial.println("IR down");
+        myservo.attach(servo_pin);
         myservo.write(servo_position_down);
         delay(500);
+        myservo.write(servo_position_mid);
+        delay(500);
+        myservo.detach();
         break;
 
       default:
         Serial.println("IR misc");
+        myservo.attach(servo_pin);
         myservo.write(servo_position_mid);
+        delay(500);
+        myservo.detach();
     }
     irrecv.resume();  //Receive the next value
   }
