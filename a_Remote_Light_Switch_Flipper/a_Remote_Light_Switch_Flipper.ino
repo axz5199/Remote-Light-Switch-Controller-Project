@@ -196,7 +196,7 @@ void loop()
   if (irrecv.decode(&results)) {
 
     serialPrintUint64(results.value, HEX);
-    Serial.println("");
+    Serial.print(" ");
 
     switch (results.value)
     {
@@ -222,10 +222,6 @@ void loop()
 
       default:
         Serial.println("IR misc");
-        myservo.attach(servo_pin);
-        myservo.write(servo_position_mid);
-        delay(500);
-        myservo.detach();
     }
     irrecv.resume();  //Receive the next value
   }
