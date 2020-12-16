@@ -126,7 +126,6 @@ void setup()
   myservo.write(servo_position_mid);
   irrecv.enableIRIn(); //Start the receiver
   WiFi.begin(ssid, password); //Wifi setup
-  wifi_set_sleep_type(MODEM_SLEEP_T);
   
   //Connect to wifi
   while(WiFi.status()!=WL_CONNECTED)
