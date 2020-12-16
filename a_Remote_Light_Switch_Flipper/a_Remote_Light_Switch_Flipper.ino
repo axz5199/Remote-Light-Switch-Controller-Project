@@ -89,9 +89,9 @@ char index_html[] PROGMEM = {"<html>\n"
 
 int wifi_connection_timer = 0; //Measures the amount of time spent trying to connect to wifi
 
-int servo_position_up = 120;
-int servo_position_mid = 85;
-int servo_position_down = 45;
+int servo_position_up = 130;
+int servo_position_mid = 90;
+int servo_position_down = 50;
 
 ESP8266WebServer server;
 Servo myservo;
@@ -110,13 +110,13 @@ void setup()
   //Esablish orientation
   if (digitalRead(orientation_switch) == 0) //Servo on left side
   {
-    servo_position_up = 45;
-    servo_position_down = 120;
+    servo_position_up = 50;
+    servo_position_down = 130;
   }
   else //Servo on right side
   {
-    servo_position_up = 120;
-    servo_position_down = 45;
+    servo_position_up = 130;
+    servo_position_down = 50;
   }
   
 
@@ -174,9 +174,9 @@ void loop()
   {
     Serial.println("PB up");
     myservo.attach(servo_pin);
-    myservo.write(120);
+    myservo.write(130);
     delay(500);
-    myservo.write(85);
+    myservo.write(90);
     delay(500);
     myservo.detach();
   }
@@ -185,9 +185,9 @@ void loop()
   {
     Serial.println("PB down");
     myservo.attach(servo_pin);
-    myservo.write(45);
+    myservo.write(50);
     delay(500);
-    myservo.write(85);
+    myservo.write(90);
     delay(500);
     myservo.detach();
   }
